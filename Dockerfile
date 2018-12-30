@@ -3,7 +3,7 @@ FROM  registry.cn-hangzhou.aliyuncs.com/w_docker/alpine:3.8
 
 MAINTAINER gw123  <963353840@qq.com>
 
-WORKDIR /data/wwwwroot
+WORKDIR /data/wwwroot
 COPY    ./php7 /etc/php7  
 RUN mkdir -p /data/wwwroot&&adduser -D -s /sbin/nologin -h /data/wwwroot www
 RUN apk add php7 php7-fpm php7-mysqli php7-pdo_mysql php7-mbstring\
