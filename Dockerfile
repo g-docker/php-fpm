@@ -1,6 +1,4 @@
-FROM  registry.cn-zhangjiakou.aliyuncs.com/w_docker/w_alpine:latest
-#FROM  registry.cn-hangzhou.aliyuncs.com/w_docker/alpine:3.8
-
+FROM  registry.cn-beijing.aliyuncs.com/w_docker/alpine
 MAINTAINER gw123  <963353840@qq.com>
 
 WORKDIR /data/wwwroot
