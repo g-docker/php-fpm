@@ -1,15 +1,36 @@
-FROM  registry.cn-beijing.aliyuncs.com/w_docker/alpine
+#FROM  registry.cn-beijing.aliyuncs.com/w_docker/alpine
+#FROM  php:7.2.29-fpm-alpine3.11 
+FROM daocloud.io/php:7.2-fpm-alpine
 MAINTAINER gw123  <963353840@qq.com>
-
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN  mkdir -p /data/wwwroot 
 WORKDIR /data/wwwroot
-COPY    ./php7 /etc/php7  
-RUN mkdir -p /data/wwwroot&&adduser -D -s /sbin/nologin -h /data/wwwroot www
-RUN apk add php7 php7-fpm php7-mysqli php7-pdo_mysql php7-mbstring php7-curl\
-        php7-json php7-zlib php7-gd php7-intl php7-session php7-tokenizer\
-	php7-openssl php7-mysqlnd php7-mysqli php7-zip php7-pdo php7-dom\
-	php7-xml php7-fileinfo php7-xmlwriter &&\
-	rm -f /var/cache/apk/*\
-#RUN apk add composer && composer global require "laravel/installer"
-EXPOSE 9000
-#CMD /startup1.sh
-ENTRYPOINT ["php-fpm7","-F"]
+#RUN  adduser -D -s /sbin/nologin -h /data/wwwroot www
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+RUN apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        curl-dev \
+        imagemagick-dev \
+        libtool \
+        libxml2-dev \
+    && apk add --no-cache \
+        curl \
+        git \
+        imagemagick \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick
+
+RUN docker-php-ext-install \
+        curl \
+        iconv \
+        mbstring \
+        pdo \
+        pdo_mysql \
+        xml 
+
+RUN rm -rf /var/cache/apk/* 
+
+EXPOSE  9000
+
+#把entrypoint 交给其他 k8s ，docker-compose 指定方便调试
+#ENTRYPOINT ["php-fpm","-F"]
