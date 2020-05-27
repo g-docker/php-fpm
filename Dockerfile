@@ -15,7 +15,6 @@ RUN apk add --no-cache --virtual .build-deps \
         libxml2-dev \
     && apk add --no-cache \
         curl \
-        git \
         imagemagick \
     && pecl install imagick \
     && docker-php-ext-enable imagick
@@ -26,10 +25,11 @@ RUN docker-php-ext-install \
         mbstring \
         pdo \
         pdo_mysql \
-        xml 
+        xml\
+        simplexml
 
 RUN rm -rf /var/cache/apk/* 
-
+#注意要给其他主机访问加上 bind 0.0.0.0
 EXPOSE  9000
 
 #把entrypoint 交给其他 k8s ，docker-compose 指定方便调试
